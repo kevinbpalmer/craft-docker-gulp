@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+Craft-2.6.3012.zip
+mysql-backup
+logs

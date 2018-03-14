@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+  craft:
+    build: .
+    container_name: craft
+    ports:
+      - 80:80
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./www:/var/www
+      - ./logs:/var/log
+    environment:
+      MYSQL_SERVER: mysql
+      MYSQL_DATABASE: craft_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      DEV_MODE: "true"
+      SITE_URL: "http://localhost/"
+
+  mysql:
+      container_name: mysql
+      build:
+        context: .
+        dockerfile: Dockerfile-mysql
+      restart: always
+      volumes:
+        - /var/lib/mysql
+      environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: craft_db
+          MYSQL_USER: craft_db
+          MYSQL_PASSWORD: dev
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    links:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+
+  backup:
+    image: jswetzen/mysql-backup
+    container_name: backup
+    depends_on:
+      - mysql
+    volumes:
+        - ./mysql-backup:/backup
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASS: root
+      CRON_TIME: '*/30 * * * *'
+      MAX_BACKUPS: 20
+      INIT_BACKUP: 'true'
+    restart: always

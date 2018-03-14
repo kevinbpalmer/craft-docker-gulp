@@ -1,0 +1,21 @@
+FROM php:7.0-apache
+
+RUN apt-get update
+
+# necessary packages from apt repo
+RUN apt-get install -y vim libmcrypt-dev libmagickwand-dev libmagickcore-dev curl
+
+# need to make sure we have these necessary craft extensions
+RUN docker-php-ext-install pdo_mysql mcrypt pdo
+RUN pecl install imagick-3.4.3
+RUN docker-php-ext-enable imagick
+
+# node/npm setup
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install nodejs
+RUN nodejs -v node -v npm -v
+
+# enables mod_rewrite
+RUN a2enmod rewrite
+
+WORKDIR /var/www
