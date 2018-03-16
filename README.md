@@ -6,6 +6,7 @@ git clone https://github.com/kevinbpalmer/craft-docker-gulp.git
 cd craft-docker-gulp
 docker-compose up -d --build
 docker exec -it craft bash
+init
 npm install
 npm install -g gulp
 gulp serve

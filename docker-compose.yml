@@ -12,32 +12,34 @@ services:
       - ./www:/var/www
       - ./logs:/var/log
     environment:
-      MYSQL_SERVER: mysql
-      MYSQL_DATABASE: craft_db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      ENVIRONMENT: "dev"
+      SECURITY_KEY: "tJKd8fLkwVebwhtTukjka1ES5Z64FdhW"
+      DB_DRIVER: "mysql"
+      DB_SERVER: mysql
+      DB_DATABASE: craft_db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_TABLE_PREFIX: "craft_"
+      DB_PORT: 3306
       DEV_MODE: "true"
-      SITE_URL: "http://localhost/"
 
   mysql:
-      container_name: mysql_new
-      build:
-        context: .
-        dockerfile: Dockerfile-mysql
-      restart: always
-      volumes:
-        - /var/lib/mysql
-      environment:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: craft_db
-          MYSQL_USER: craft_db
-          MYSQL_PASSWORD: dev
+    image: mysql:5.7
+    container_name: mysql_new
+    restart: always
+    volumes:
+      - /Users/kevin-palmer/docker-mysql-data:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: craft_db
+        MYSQL_USER: craft_db
+        MYSQL_PASSWORD: dev
 
   phpmyadmin:
+    image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_new
     links:
       - mysql
-    image: phpmyadmin/phpmyadmin
     restart: always
     ports:
       - 8080:80
