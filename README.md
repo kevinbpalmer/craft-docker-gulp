@@ -1,4 +1,4 @@
-# Craft v2.6.3012
+# Craft v3
 
 ## Installation
 ```

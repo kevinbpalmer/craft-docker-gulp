@@ -3,7 +3,7 @@ version: "3"
 services:
   craft:
     build: .
-    container_name: craft
+    container_name: craft_new
     ports:
       - 80:80
       - 3000:3000
@@ -20,7 +20,7 @@ services:
       SITE_URL: "http://localhost/"
 
   mysql:
-      container_name: mysql
+      container_name: mysql_new
       build:
         context: .
         dockerfile: Dockerfile-mysql
@@ -34,7 +34,7 @@ services:
           MYSQL_PASSWORD: dev
 
   phpmyadmin:
-    container_name: phpmyadmin
+    container_name: phpmyadmin_new
     links:
       - mysql
     image: phpmyadmin/phpmyadmin
@@ -47,7 +47,7 @@ services:
 
   backup:
     image: jswetzen/mysql-backup
-    container_name: backup
+    container_name: backup_new
     depends_on:
       - mysql
     volumes:
