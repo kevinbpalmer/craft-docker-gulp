@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  craft:
+    build: .
+    container_name: craft
+    ports:
+      - 80:80
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./www:/var/www
+      - ./logs:/var/log
+    environment:
+      ENVIRONMENT: "dev"
+      SECURITY_KEY: "tJKd8fLkwVebwhtTukjka1ES5Z64FdhW"
+      DB_DRIVER: "mysql"
+      DB_SERVER: mysql
+      DB_DATABASE: craft_db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_TABLE_PREFIX: "craft_"
+      DB_PORT: 3306
+      DEV_MODE: "true"
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    volumes:
+      - /Users/kevin-palmer/docker-mysql-data:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: craft_db
+        MYSQL_USER: craft_db
+        MYSQL_PASSWORD: dev
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - mysql
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+
+  backup:
+    image: jswetzen/mysql-backup
+    container_name: backup
+    depends_on:
+      - mysql
+    volumes:
+        - ./mysql-backup:/backup
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASS: root
+      CRON_TIME: '*/30 * * * *'
+      MAX_BACKUPS: 20
+      INIT_BACKUP: 'true'
+    restart: always
